@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Next.js
+.next/
+out/
+
+# Build output
+dist/
+build/
+
+# Environment variables (sensitive)
+.env
+
+# Claude / AI tools
+CLAUDE.md
+.claude/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
