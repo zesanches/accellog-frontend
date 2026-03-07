@@ -103,9 +103,9 @@ export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
           <Input
             placeholder="Adicionar novo item..."
             value={newItemText}
-            onChange={(event) => setNewItemText(eevent.target.value)}
+            onChange={(event) => setNewItemText(event.target.value)}
             onKeyDown={(e) => {
-              if (event.key === "Enter") handleAddItem();
+              if (e.key === "Enter") handleAddItem();
             }}
           />
           <Button
