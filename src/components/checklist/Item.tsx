@@ -5,15 +5,12 @@ import type { ChecklistItem as ChecklistItemType } from "@/types/checklist";
 import { Button } from "@/components/ui/button";
 import { useChecklistStore } from "@/store/checklistStore";
 
-interface ChecklistItemProps {
+interface ItemProps {
   item: ChecklistItemType;
   checklistId: string;
 }
 
-export default function ChecklistItem({
-  item,
-  checklistId,
-}: ChecklistItemProps) {
+export default function Item({ item, checklistId }: ItemProps) {
   const toggleItem = useChecklistStore((state) => state.toggleItem);
   const removeItem = useChecklistStore((state) => state.removeItem);
 

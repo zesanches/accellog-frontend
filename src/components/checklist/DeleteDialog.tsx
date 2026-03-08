@@ -16,17 +16,17 @@ import {
 import { useChecklistStore } from "@/store/checklistStore";
 import { buttonVariants } from "@/components/ui/button";
 
-interface DeleteChecklistDialogProps {
+interface DeleteDialogProps {
   checklistId: string;
   checklistTitle: string;
   children: ReactNode;
 }
 
-export default function DeleteChecklistDialog({
+export default function DeleteDialog({
   checklistId,
   checklistTitle,
   children,
-}: DeleteChecklistDialogProps) {
+}: DeleteDialogProps) {
   const deleteChecklist = useChecklistStore((state) => state.deleteChecklist);
 
   const handleDelete = () => {

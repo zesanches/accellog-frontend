@@ -2,7 +2,7 @@
 
 import { useInitializeChecklists } from "@/hooks/useInitializeChecklists";
 import { useChecklistStore } from "@/store/checklistStore";
-import ChecklistList from "@/components/checklist/ChecklistList";
+import { Checklist } from "@/components/checklist";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ErrorMessage from "@/components/common/ErrorMessage";
 
@@ -30,7 +30,7 @@ export default function HomePage() {
       ) : error ? (
         <ErrorMessage message={error} onRetry={retry} />
       ) : (
-        <ChecklistList />
+        <Checklist.List />
       )}
     </main>
   );
