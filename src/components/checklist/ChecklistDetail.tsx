@@ -2,14 +2,107 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, ListChecks } from "lucide-react";
+import { ArrowLeft, Plus, ListChecks, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Checklist } from "@/types/checklist";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistStore } from "@/store/checklistStore";
+import { computeChecklistProgress } from "@/lib/utils";
+import type { ChecklistProgress } from "@/lib/utils";
 import ChecklistItem from "./ChecklistItem";
+
+interface ChecklistDetailHeaderProps {
+  title: string;
+  isComplete: boolean;
+}
+
+function ChecklistDetailHeader({ title, isComplete }: ChecklistDetailHeaderProps) {
+  return (
+    <div className="flex items-center gap-3">
+      <ListChecks
+        className={`h-7 w-7 shrink-0 ${
+          isComplete ? "text-green-500" : "text-primary"
+        }`}
+      />
+      <h1 className="text-2xl font-bold">{title}</h1>
+    </div>
+  );
+}
+
+function ChecklistDetailProgress({
+  completedCount,
+  totalCount,
+  progress,
+  isComplete,
+}: ChecklistProgress) {
+  return (
+    <div className="p-4 border rounded-xl bg-card space-y-3">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-muted-foreground">
+          {completedCount} de {totalCount} itens concluídos
+        </span>
+        <span
+          className={`text-sm font-semibold tabular-nums ${
+            isComplete ? "text-green-600" : "text-foreground"
+          }`}
+        >
+          {Math.round(progress)}%
+        </span>
+      </div>
+      <Progress
+        value={progress}
+        className={`h-3 ${isComplete ? "[&>div]:bg-green-500" : ""}`}
+      />
+      {isComplete && totalCount > 0 && (
+        <p className="flex items-center justify-center gap-1.5 text-sm text-green-600 font-medium">
+          <CheckCircle2 className="h-4 w-4" />
+          Todos os itens foram concluídos!
+        </p>
+      )}
+    </div>
+  );
+}
+
+interface ChecklistAddItemFormProps {
+  checklistId: string;
+}
+
+function ChecklistAddItemForm({ checklistId }: ChecklistAddItemFormProps) {
+  const [newItemText, setNewItemText] = useState("");
+  const addItem = useChecklistStore((state) => state.addItem);
+
+  const handleAddItem = () => {
+    const text = newItemText.trim();
+    if (!text) return;
+
+    addItem(checklistId, text);
+    toast.success("Item adicionado!");
+    setNewItemText("");
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Input
+        placeholder="Adicionar novo item..."
+        value={newItemText}
+        onChange={(event) => setNewItemText(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") handleAddItem();
+        }}
+      />
+      <Button
+        onClick={handleAddItem}
+        disabled={!newItemText.trim()}
+        className="gap-1.5 shrink-0"
+      >
+        <Plus className="h-4 w-4" />
+        Adicionar
+      </Button>
+    </div>
+  );
+}
 
 interface ChecklistDetailProps {
   checklist: Checklist;
@@ -17,23 +110,7 @@ interface ChecklistDetailProps {
 
 export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
   const router = useRouter();
-  const [newItemText, setNewItemText] = useState("");
-  const addItem = useChecklistStore((state) => state.addItem);
-
-  const completedCount = checklist.items.filter((item) => item.completed).length;
-  const totalCount = checklist.items.length;
-  const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-  const isComplete = totalCount > 0 && completedCount === totalCount;
-
-  const handleAddItem = () => {
-    const text = newItemText.trim();
-
-    if (!text) return;
-
-    addItem(checklist.id, text);
-    toast.success("Item adicionado!");
-    setNewItemText("");
-  };
+  const progressData = computeChecklistProgress(checklist.items);
 
   return (
     <div className="container mx-auto max-w-2xl py-8 px-4">
@@ -47,38 +124,12 @@ export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
       </Button>
 
       <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <ListChecks
-            className={`h-7 w-7 shrink-0 ${
-              isComplete ? "text-green-500" : "text-primary"
-            }`}
-          />
-          <h1 className="text-2xl font-bold">{checklist.title}</h1>
-        </div>
+        <ChecklistDetailHeader
+          title={checklist.title}
+          isComplete={progressData.isComplete}
+        />
 
-        <div className="p-4 border rounded-xl bg-card space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              {completedCount} de {totalCount} itens concluídos
-            </span>
-            <span
-              className={`text-sm font-semibold tabular-nums ${
-                isComplete ? "text-green-600" : "text-foreground"
-              }`}
-            >
-              {Math.round(progress)}%
-            </span>
-          </div>
-          <Progress
-            value={progress}
-            className={`h-3 ${isComplete ? "[&>div]:bg-green-500" : ""}`}
-          />
-          {isComplete && totalCount > 0 && (
-            <p className="text-sm text-green-600 font-medium text-center">
-              ✓ Todos os itens foram concluídos!
-            </p>
-          )}
-        </div>
+        <ChecklistDetailProgress {...progressData} />
 
         <div className="border rounded-xl overflow-hidden bg-card">
           {checklist.items.length === 0 ? (
@@ -99,24 +150,7 @@ export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
           )}
         </div>
 
-        <div className="flex gap-2">
-          <Input
-            placeholder="Adicionar novo item..."
-            value={newItemText}
-            onChange={(event) => setNewItemText(event.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAddItem();
-            }}
-          />
-          <Button
-            onClick={handleAddItem}
-            disabled={!newItemText.trim()}
-            className="gap-1.5 shrink-0"
-          >
-            <Plus className="h-4 w-4" />
-            Adicionar
-          </Button>
-        </div>
+        <ChecklistAddItemForm checklistId={checklist.id} />
       </div>
     </div>
   );

@@ -55,8 +55,8 @@ export default function CreateChecklistDialog({
           <Input
             placeholder="Ex: Tarefas do projeto, Compras da semana..."
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+            onChange={(event) => setTitle(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && handleCreate()}
             autoFocus
           />
         </div>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useChecklistStore } from "@/store/checklistStore";
 import { fetchTodos } from "@/lib/api";
-import type { Checklist } from "@/types/checklist";
+import { buildChecklistsFromTodos } from "@/lib/utils";
 
 export function useInitializeChecklists() {
   const isInitialized = useChecklistStore((state) => state.isInitialized);
@@ -25,32 +25,7 @@ export function useInitializeChecklists() {
 
         if (cancelled) return;
 
-        const half = Math.ceil(todos.length / 2);
-
-        const checklists: Checklist[] = [
-          {
-            id: crypto.randomUUID(),
-            title: "Checklist A",
-            createdAt: new Date().toISOString(),
-            items: todos.slice(0, half).map((todo) => ({
-              id: String(todo.id),
-              text: todo.title,
-              completed: todo.completed,
-            })),
-          },
-          {
-            id: crypto.randomUUID(),
-            title: "Checklist B",
-            createdAt: new Date().toISOString(),
-            items: todos.slice(half).map((todo) => ({
-              id: String(todo.id),
-              text: todo.title,
-              completed: todo.completed,
-            })),
-          },
-        ];
-
-        setChecklists(checklists);
+        setChecklists(buildChecklistsFromTodos(todos));
         setInitialized();
       } catch (err) {
         if (!cancelled) {
