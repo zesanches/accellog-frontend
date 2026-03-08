@@ -4,11 +4,11 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChecklistStore } from "@/store/checklistStore";
 import type { ChecklistLimit } from "@/types/checklist";
-import CreateChecklistDialog from "./CreateChecklistDialog";
+import CreateDialog from "./CreateDialog";
 
 const LIMIT_OPTIONS: ChecklistLimit[] = [10, 20, 50];
 
-export default function ChecklistListToolbar() {
+export default function ListToolbar() {
   const limit = useChecklistStore((state) => state.limit);
   const setLimit = useChecklistStore((state) => state.setLimit);
 
@@ -35,12 +35,12 @@ export default function ChecklistListToolbar() {
         </div>
       </div>
 
-      <CreateChecklistDialog>
+      <CreateDialog>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
           Novo Checklist
         </Button>
-      </CreateChecklistDialog>
+      </CreateDialog>
     </div>
   );
 }

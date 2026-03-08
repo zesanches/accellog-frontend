@@ -11,14 +11,22 @@ import { Progress } from "@/components/ui/progress";
 import { useChecklistStore } from "@/store/checklistStore";
 import { computeChecklistProgress } from "@/lib/utils";
 import type { ChecklistProgress } from "@/lib/utils";
-import ChecklistItem from "./ChecklistItem";
+import Item from "./Item";
 
-interface ChecklistDetailHeaderProps {
+interface DetailHeaderProps {
   title: string;
   isComplete: boolean;
 }
 
-function ChecklistDetailHeader({ title, isComplete }: ChecklistDetailHeaderProps) {
+interface AddItemFormProps {
+  checklistId: string;
+}
+
+interface DetailProps {
+  checklist: Checklist;
+}
+
+function DetailHeader({ title, isComplete }: DetailHeaderProps) {
   return (
     <div className="flex items-center gap-3">
       <ListChecks
@@ -31,12 +39,7 @@ function ChecklistDetailHeader({ title, isComplete }: ChecklistDetailHeaderProps
   );
 }
 
-function ChecklistDetailProgress({
-  completedCount,
-  totalCount,
-  progress,
-  isComplete,
-}: ChecklistProgress) {
+function DetailProgress({ completedCount, totalCount, progress, isComplete }: ChecklistProgress) {
   return (
     <div className="p-4 border rounded-xl bg-card space-y-3">
       <div className="flex items-center justify-between">
@@ -65,11 +68,7 @@ function ChecklistDetailProgress({
   );
 }
 
-interface ChecklistAddItemFormProps {
-  checklistId: string;
-}
-
-function ChecklistAddItemForm({ checklistId }: ChecklistAddItemFormProps) {
+function AddItemForm({ checklistId }: AddItemFormProps) {
   const [newItemText, setNewItemText] = useState("");
   const addItem = useChecklistStore((state) => state.addItem);
 
@@ -104,11 +103,7 @@ function ChecklistAddItemForm({ checklistId }: ChecklistAddItemFormProps) {
   );
 }
 
-interface ChecklistDetailProps {
-  checklist: Checklist;
-}
-
-export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
+export default function Detail({ checklist }: DetailProps) {
   const router = useRouter();
   const progressData = computeChecklistProgress(checklist.items);
 
@@ -124,12 +119,9 @@ export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
       </Button>
 
       <div className="space-y-6">
-        <ChecklistDetailHeader
-          title={checklist.title}
-          isComplete={progressData.isComplete}
-        />
+        <DetailHeader title={checklist.title} isComplete={progressData.isComplete} />
 
-        <ChecklistDetailProgress {...progressData} />
+        <DetailProgress {...progressData} />
 
         <div className="border rounded-xl overflow-hidden bg-card">
           {checklist.items.length === 0 ? (
@@ -140,17 +132,13 @@ export default function ChecklistDetail({ checklist }: ChecklistDetailProps) {
           ) : (
             <div className="divide-y">
               {checklist.items.map((item) => (
-                <ChecklistItem
-                  key={item.id}
-                  item={item}
-                  checklistId={checklist.id}
-                />
+                <Item key={item.id} item={item} checklistId={checklist.id} />
               ))}
             </div>
           )}
         </div>
 
-        <ChecklistAddItemForm checklistId={checklist.id} />
+        <AddItemForm checklistId={checklist.id} />
       </div>
     </div>
   );

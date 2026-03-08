@@ -1,15 +1,15 @@
 "use client";
 
 import { useChecklistStore } from "@/store/checklistStore";
-import ChecklistCard from "./ChecklistCard";
-import ChecklistListToolbar from "./ChecklistListToolbar";
+import Card from "./Card";
+import ListToolbar from "./ListToolbar";
 
-export default function ChecklistList() {
+export default function List() {
   const checklists = useChecklistStore((state) => state.checklists);
 
   return (
     <div className="space-y-6">
-      <ChecklistListToolbar />
+      <ListToolbar />
 
       {checklists.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -21,7 +21,7 @@ export default function ChecklistList() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {checklists.map((checklist) => (
-            <ChecklistCard key={checklist.id} checklist={checklist} />
+            <Card key={checklist.id} checklist={checklist} />
           ))}
         </div>
       )}

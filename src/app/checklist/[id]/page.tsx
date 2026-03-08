@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useChecklistStore } from "@/store/checklistStore";
-import ChecklistDetail from "@/components/checklist/ChecklistDetail";
+import { Checklist } from "@/components/checklist";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
@@ -36,5 +36,5 @@ export default function ChecklistDetailPage() {
     );
   }
 
-  return <ChecklistDetail checklist={checklist} />;
+  return <Checklist.Detail checklist={checklist} />;
 }

@@ -6,19 +6,26 @@ import type { Checklist } from "@/types/checklist";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { computeChecklistProgress } from "@/lib/utils";
-import DeleteChecklistDialog from "./DeleteChecklistDialog";
+import DeleteDialog from "./DeleteDialog";
 
-interface ChecklistCardHeaderProps {
+interface CardHeaderProps {
   checklistId: string;
   checklistTitle: string;
   isComplete: boolean;
 }
 
-function ChecklistCardHeader({
-  checklistId,
-  checklistTitle,
-  isComplete,
-}: ChecklistCardHeaderProps) {
+interface CardProgressProps {
+  completedItems: number;
+  totalItems: number;
+  progress: number;
+  isComplete: boolean;
+}
+
+interface CardProps {
+  checklist: Checklist;
+}
+
+function CardHeader({ checklistId, checklistTitle, isComplete }: CardHeaderProps) {
   return (
     <div className="flex items-start justify-between gap-3">
       <Link href={`/checklist/${checklistId}`} className="flex-1 min-w-0 group">
@@ -34,7 +41,7 @@ function ChecklistCardHeader({
         </div>
       </Link>
 
-      <DeleteChecklistDialog checklistId={checklistId} checklistTitle={checklistTitle}>
+      <DeleteDialog checklistId={checklistId} checklistTitle={checklistTitle}>
         <Button
           variant="ghost"
           size="icon"
@@ -43,24 +50,12 @@ function ChecklistCardHeader({
         >
           <Trash2 className="h-4 w-4" />
         </Button>
-      </DeleteChecklistDialog>
+      </DeleteDialog>
     </div>
   );
 }
 
-interface ChecklistCardProgressProps {
-  completedItems: number;
-  totalItems: number;
-  progress: number;
-  isComplete: boolean;
-}
-
-function ChecklistCardProgress({
-  completedItems,
-  totalItems,
-  progress,
-  isComplete,
-}: ChecklistCardProgressProps) {
+function CardProgress({ completedItems, totalItems, progress, isComplete }: CardProgressProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
@@ -83,23 +78,19 @@ function ChecklistCardProgress({
   );
 }
 
-interface ChecklistCardProps {
-  checklist: Checklist;
-}
-
-export default function ChecklistCard({ checklist }: ChecklistCardProps) {
+export default function Card({ checklist }: CardProps) {
   const { completedCount, totalCount, progress, isComplete } =
     computeChecklistProgress(checklist.items);
 
   return (
     <div className="relative border rounded-xl p-5 bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 flex flex-col gap-4">
-      <ChecklistCardHeader
+      <CardHeader
         checklistId={checklist.id}
         checklistTitle={checklist.title}
         isComplete={isComplete}
       />
 
-      <ChecklistCardProgress
+      <CardProgress
         completedItems={completedCount}
         totalItems={totalCount}
         progress={progress}

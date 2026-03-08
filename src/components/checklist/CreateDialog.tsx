@@ -15,13 +15,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useChecklistStore } from "@/store/checklistStore";
 
-interface CreateChecklistDialogProps {
+interface CreateDialogProps {
   children: ReactNode;
 }
 
-export default function CreateChecklistDialog({
-  children,
-}: CreateChecklistDialogProps) {
+export default function CreateDialog({ children }: CreateDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const addChecklist = useChecklistStore((state) => state.addChecklist);
