@@ -57,16 +57,16 @@ export const useChecklistStore = create<ChecklistStore>((set) => ({
       checklists: state.checklists.map((checklist) =>
         checklist.id === checklistId
           ? {
-              ...checklist,
-              items: [
-                ...checklist.items,
-                {
-                  id: crypto.randomUUID(),
-                  text,
-                  completed: false,
-                },
-              ],
-            }
+            ...checklist,
+            items: [
+              ...checklist.items,
+              {
+                id: crypto.randomUUID(),
+                text,
+                completed: false,
+              },
+            ],
+          }
           : checklist
       ),
     })),
@@ -85,11 +85,11 @@ export const useChecklistStore = create<ChecklistStore>((set) => ({
       checklists: state.checklists.map((checklist) =>
         checklist.id === checklistId
           ? {
-              ...checklist,
-              items: checklist.items.map((item) =>
-                item.id === itemId ? { ...item, completed: !item.completed } : item
-              ),
-            }
+            ...checklist,
+            items: checklist.items.map((item) =>
+              item.id === itemId ? { ...item, completed: !item.completed } : item
+            ),
+          }
           : checklist
       ),
     })),

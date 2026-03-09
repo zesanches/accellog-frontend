@@ -83,7 +83,7 @@ export default function Card({ checklist }: CardProps) {
     computeChecklistProgress(checklist.items);
 
   return (
-    <div className="relative border rounded-xl p-5 bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 flex flex-col gap-4">
+    <div className="relative border rounded-xl p-5 bg-card text-card-foreground shadow-xs hover:shadow-md transition-all duration-200 flex flex-col gap-4">
       <CardHeader
         checklistId={checklist.id}
         checklistTitle={checklist.title}
